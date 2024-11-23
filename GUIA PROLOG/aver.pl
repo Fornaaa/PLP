@@ -57,21 +57,37 @@ aplanar([X|XS],ZS):-not(aplanar(X,_)),aplanar(XS,Z1),append([X],Z1,ZS).
 
 %Ejercicio 7
 %interseccion(+L1,+L2,-L3)
+interseccion([],_,[]).
+interseccion([X|XS],YS,ZS):-member(X,YS),interseccion(XS,YS,Z1),append([X],Z1,ZS).
+interseccion([X|XS],YS,ZS):-not(member(X,YS)),interseccion(XS,YS,ZS).
+
 
 %partir(N,L,L1,L2)
 partir(0,L,[],L).
-partir(N,[L|LS],[L|XS],Y):- partir(N1,LS,XS,Y),N is N1+1.
+partir(N,[L|LS],[L|XS],Y):- partir(N1,LS,XS,Y), N is N1+1.
 
 %borrar(+ListaOriginal,+X,-ListaSinXS)
 borrar([],_,[]).
 borrar([X|XS],T,[X|ZS]):-X\=T,borrar(XS,T,ZS).
-borrar([X|XS],X,ZS):-borrar(XS,X,ZS).
+borrar([X|XS],X,ZS):- borrar(XS,X,ZS).
 
 %sacarDuplicados(+L1,-L2).
 sacarDuplicados([],[]).
 sacarDuplicados([X|XS],[X|ZS]):-not(member(X,XS)),sacarDuplicados(XS,ZS).
 sacarDuplicados([X|XS],ZS):- member(X,XS),sacarDuplicados(XS,ZS).
 
+%permutacion(+L1,+L2)
+permutacion([],[]).
+permutacion([X|XS],YS):-length([X|XS],L1),length(YS,L2),L1=:=L2,member(X,YS),borrar(YS,X,LS),permutacion(XS,LS).
+
+
+
+%reparto(+XS,+N,-LLs).
+reparto(_,0,[]).
+reparto(XS,N,[L|LL]):-miembro(L,XS),reparto(XS,N1,LT),N1>=0, N is N1+1, append(L,LT,LL), aplanar(LL,XS).
+
+miembro([],_).
+miembro([L|LS],XS):-member(L,XS),miembro(LS,XS).
 
 %Ejercicio 8
 %parteQueSuma(+L,+S,-P).
@@ -83,3 +99,50 @@ partes([],[]).
 partes([L|S1],[L|LS]):-sublista(S1,LS).
 partes(S,[_|LS]):-sublista(S,LS).
 
+%Ejercicio 9 
+%desde(+X,?Y).
+desde(X,X).
+desde(X,Y) :- N is X+1, desde(N,Y).
+
+
+%Ejercicio 11
+
+vacio(nil).
+raiz(bin(_, V, _), V).
+
+
+altura(nil,0).
+altura(bin(I,_,D),H):-altura(I,H1),altura(D,H2), maxi(H1,H2,H3), H is H3+1.
+
+
+maxi(H1,H2,H1):- H1 >= H2.
+maxi(H1,H2,H2):- H1 < H2.
+
+cantNodos(nil,0).
+cantNodos(bin(I,_,D),H):-cantNodos(I,H1),cantNodos(D,H2),H is 1+H1+H2.
+
+%inorder izq r der
+inorder(nil,[]).
+inorder(bin(I,C,D),Z):-inorder(I,V1),inorder(D,V2),append(V1,[C|V2],Z).
+
+%Arbol con inorder
+aBinorder([],nil).
+aBinorder(L,bin(I,C,D)):-append(RI,[C|RD],L),aBinorder(RI,I),aBinorder(RD,D).
+
+%ABB de forna:
+
+aBB(X):- inorder(X,T),ordenada(T).
+
+ordenada([X]).
+ordenada([X|XS]):- head(XS,Y) ,X=<Y,ordenada(XS).
+
+head([X|XS],X).
+
+%esta menos gaga q el de agus
+aBB(nil).
+aBB(bin(nil, _, nil)).
+aBB(bin(Izq, V, nil)) :- raiz(Izq, RI), RI < V, aBB(Izq). 
+aBB(bin(nil, V, Der)) :- raiz(Der, RD), V < RD, aBB(Der).
+aBB(bin(Izq, V, Der)) :- raiz(Izq, RI), raiz(Der, RD), RI < V, V < RD, aBB(Izq), aBB(Der).
+
+%13
