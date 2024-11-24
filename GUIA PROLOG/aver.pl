@@ -133,16 +133,77 @@ aBinorder(L,bin(I,C,D)):-append(RI,[C|RD],L),aBinorder(RI,I),aBinorder(RD,D).
 
 aBB(X):- inorder(X,T),ordenada(T).
 
-ordenada([X]).
+ordenada([_]).
 ordenada([X|XS]):- head(XS,Y) ,X=<Y,ordenada(XS).
 
-head([X|XS],X).
+head([X|_],X).
 
 %esta menos gaga q el de agus
-aBB(nil).
-aBB(bin(nil, _, nil)).
-aBB(bin(Izq, V, nil)) :- raiz(Izq, RI), RI < V, aBB(Izq). 
-aBB(bin(nil, V, Der)) :- raiz(Der, RD), V < RD, aBB(Der).
-aBB(bin(Izq, V, Der)) :- raiz(Izq, RI), raiz(Der, RD), RI < V, V < RD, aBB(Izq), aBB(Der).
+%aBB(nil).
+%aBB(bin(nil, _, nil)).
+%aBB(bin(Izq, V, nil)) :- raiz(Izq, RI), RI < V, aBB(Izq). 
+%aBB(bin(nil, V, Der)) :- raiz(Der, RD), V < RD, aBB(Der).
+%aBB(bin(Izq, V, Der)) :- raiz(Izq, RI), raiz(Der, RD), RI < V, V < RD, aBB(Izq), aBB(Der).
 
-%13
+%aBBinsertar(+X,+T1,-T2)
+aBBinsertar(X,nil,bin(nil,X,nil)).
+aBBinsertar(X,bin(I,C,D),bin(I,C,TN)):-X>C,aBBinsertar(X,D,TN).
+aBBinsertar(X,bin(I,C,D),bin(TN,C,D)):-X<C,aBBinsertar(X,I,TN).
+
+%13.
+
+
+coprimos(X,Y):- desde(1,X),between(1,X,Y), sonCoprimos(X,Y).
+
+sonCoprimos(X,Y):- 1 is gcd(X,Y).
+
+%14
+%generarCuadrado(_,_,0,[]).
+%generarCuadrado(N,M,T,[X|XS]):-length(X,N),generarLista(N,X),sumlist(X,M),generarCuadrado(N,M,T1,XS),T is T1+1.
+
+
+cuadradoSemiMagico(N,XS):- desde(0,K),length(XS,N),generarCuadrados(N,K,XS).
+
+generarCuadrados(N,K,[X]):-generarLista(N,K,X).
+generarCuadrados(N,K,[X|XS]):-generarLista(N,K,X),generarCuadrados(N,K,XS).
+
+%generarCuadradoN(0,_,[]).
+%generarCuadradoN(N,K,[X|XS]):- generarLista(N,K,X),generarCuadradoN(N,K,XS). 
+
+generarLista(0,0,[]).
+generarLista(N,M,[X|XS]):-N>0,between(0,M,X),M1 is M-X,N1 is N-1,generarLista(N1,M1,XS).
+
+%16
+frutal(frutilla).
+frutal(banana).
+frutal(manzana).
+
+cremoso(frutilla).
+cremoso(banana).
+
+aver(X):-not(cremoso(X)),frutal(X).
+
+
+%17
+corteMasParejo(L,L1,L2):- corte(L,L1,L2,R1), not((corte(L,_,_,R2),R2<R1)).
+
+corte(L,L1,L2,X):-append(L1,L2,L), sumlist(L1,S1), sumlist(L2,S2), X is abs(S1-S2).
+
+
+% próximoNumPoderoso(+X,-Y)
+
+
+%primo(X):- X>1,divisores(X,[1]).
+
+
+proxNumPod(X,K):- X1 is X+1,desde(X1,K),numPoderoso(K),!.  
+
+numPoderoso(1).
+numPoderoso(X):- between(1,X,K),primo(K),0 is X mod K,K2 is K * K,0 is X mod K2,borrarDivisor(X,K,N2),numPoderoso(N2),!.
+
+borrarDivisor(X,K,X):- not(0 is X mod K).
+borrarDivisor(X,K,RES):- 0 is X mod K, R is X / K,borrarDivisor(R,K,RES).
+
+primo(X):-X\=1,X1 is X-1,not((between(2,X1,K),0 is X mod K)).
+
+
