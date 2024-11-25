@@ -207,3 +207,40 @@ borrarDivisor(X,K,RES):- 0 is X mod K, R is X / K,borrarDivisor(R,K,RES).
 primo(X):-X\=1,X1 is X-1,not((between(2,X1,K),0 is X mod K)).
 
 
+%Ejercicio parcial 2024
+%tieneMateriaAprobada(+E,M).
+estudiante(juan).
+notas([(forna,plp,6)]).
+tieneMateriaAprobada(E,M):-estudiante(E),notas(XS),member((E,M,N),XS),N>=4.
+
+%eliminarAplazos(+NS,-L).
+eliminarAplazos([],[]).
+eliminarAplazos([(E,M,N)|XS],[(E,M,N)|L]):-N>=4,eliminarAplazos(XS,L).
+eliminarAplazos([(E,M,N)|XS],[(E,M,N)|L]):- N<4,not(tieneMateriaAprobada(E,M)),eliminarAplazos(XS,L).
+eliminarAplazos([(E,M,N)|XS],L):-tieneMateriaAprobada(E,M),N<4,eliminarAplazos(XS,L).
+
+%promedio(+A,-P).
+promedio(A,P):-estudiante(A),notas(XS),eliminarAplazos(XS,Z),calcularPromedio(A,Z,0,0,P).
+
+calcularPromedio(_,[],P,C,Z):-Z is P/C.
+calcularPromedio(E,[(E,_,N)|XS],P,C,Z):- P1 is P+N, C1 is C+1 ,calcularPromedio(E,XS,P1,C1,Z).
+calcularPromedio(E,[(A,_,_)|XS],P,C,Z):- E\=A,calcularPromedio(E,XS,P,C,Z).
+
+%mejorEstudiante(A).
+mejorEstudiante(A):-promedio(A,ZS),not((promedio(B,ZS),B>=A)).
+
+
+%Ejercicio Recuperatorio 2024
+%generarCapicuas(-L)
+
+generarCapicuas(L):-desde(1,N),generarListasGenerico(L,N),esCapicua(L).
+
+generarListasGenerico([],0).
+generarListasGenerico(XS,N):- N>0,between(1,N,N1),N2 is N-N1,generarListasGenerico(X1,N2),append([N1],X1,XS). 
+
+esCapicua([]).
+esCapicua([_]).
+esCapicua(L):-append([X],XS,L),append(YS,[X],XS),esCapicua(YS).
+
+%tokenizar(+D,L,-T)
+tokenizar(XS,[L|LS],T):- 
