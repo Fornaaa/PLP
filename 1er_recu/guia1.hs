@@ -1,4 +1,7 @@
 --Ejercicio 1
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Collapse lambdas" #-}
+{-# HLINT ignore "Redundant bracket" #-}
 
 max2 :: Ord a => (a,a) -> a
 max2 (x, y) | x >= y = x
@@ -187,12 +190,11 @@ puedeCompletarLecturas = recrBuffer (\_ _ _ rec -> rec) (\ind buf rec -> if rec 
 
 --e)
 deshacer :: Buffer a -> Int -> Buffer a
-deshacer = recrBuffer (\ind a buf rec -> \n -> if n/=0 then rec (n-1) else Write ind a buf) (\ind buf rec -> \n -> if n/=0 then rec (n-1) else Read ind buf) (const Empty)
+deshacer = recrBuffer (\ind a buf rec -> (\n -> if n/=0 then (rec (n-1)) else (Write ind a buf))) (\ind buf rec -> \n -> if n/=0 then rec (n-1) else Read ind buf) (const Empty)
 
 -- deshacer :: Buffer a -> Int -> Buffer a
 -- deshacer buf 0 = buf
 -- deshacer Empty _ = Empty
 -- deshacer (Write ind elem buf) n = deshacer buf (n-1)
 -- deshacer (Read ind buf) n = deshacer buf (n-1)
-
 
